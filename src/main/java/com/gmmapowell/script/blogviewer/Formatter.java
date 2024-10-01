@@ -1,6 +1,8 @@
 package com.gmmapowell.script.blogviewer;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.ziniki.servlet.basic.InputStreamResponder;
 import org.ziniki.servlet.tda.ParameterSource;
@@ -8,6 +10,9 @@ import org.ziniki.servlet.tda.RequestProcessor;
 import org.ziniki.servlet.tda.RequestQueryAndPostParameters;
 import org.ziniki.servlet.tda.Responder;
 import org.ziniki.ziwsh.intf.Param;
+
+import com.gmmapowell.geofs.Place;
+import com.gmmapowell.geofs.utils.GeoFSUtils;
 
 public class Formatter extends InputStreamResponder implements RequestProcessor, RequestQueryAndPostParameters {
 	private final BlogRunner runner;
@@ -30,9 +35,11 @@ public class Formatter extends InputStreamResponder implements RequestProcessor,
 			r.write("no post specified", null);
 		} else {
 			try {
-				String html = runner.format(post);
-				byte[] bs = html.getBytes();
-				sendBinary(r, new ByteArrayInputStream(bs), "text/html", bs.length);
+				Place html = runner.format(post);
+				File f = GeoFSUtils.file(html);
+				try (InputStream fis = new FileInputStream(f)) {
+					sendBinary(r, fis, "text/html", f.length());
+				}
 			} catch (NoPostException ex) {
 				r.setStatus(400);
 				r.write("there is no post " + ex.post, null);

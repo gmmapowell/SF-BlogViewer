@@ -30,18 +30,16 @@ public class BlogRunner {
 		if (cache == null)
 			cache = cfg.updateIndex().included();
 		return cache;
-		/*
-		cfg.prepare();
-		cfg.generate(files);
-		cfg.dump();
-		cfg.sink();
-		cfg.show();
-		cfg.upload();
-		cfg.finish();
-		*/
 	}
 
-	public String format(String post) throws Exception {
+	public Place format(String post) throws Exception {
+		cfg.reset();
+		cfg.generate(getFiles(post));
+		cfg.sink();
+		return cfg.root().place("latestPost.txt");
+	}
+
+	private FilesToProcess getFiles(String post) throws NoPostException {
 		List<Place> list = new ArrayList<>();
 		for (Place p : cache) {
 			if (p.name().equals(post))
@@ -50,15 +48,11 @@ public class BlogRunner {
 		if (list.isEmpty()) {
 			throw new NoPostException(post);
 		}
-		FilesToProcess files = new FilesToProcess() {
+		return new FilesToProcess() {
 			@Override
 			public Iterable<Place> included() {
 				return list;
 			}
 		};
-//		cfg.prepare();
-//		cfg.generate(files);
-//		cfg.dump();
-		return "hello, world";
 	}
 }
