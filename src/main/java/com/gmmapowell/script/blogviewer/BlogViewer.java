@@ -21,8 +21,9 @@ import org.ziniki.ziwsh.intf.WSProcessor;
 
 public class BlogViewer {
 	private final static int port = 13780;
-	
-	public static void main(String... argv) throws IOException {
+
+	public static void main(String... args) throws Exception {
+		BlogRunner blogRunner = new BlogRunner(args);
 		TDAServer server = new GrizzlyTDAServer(port);
 		Map<String, Object> items = new TreeMap<>();
 		PathTree<RequestProcessor> tree = new SimplePathTree<>();
@@ -31,7 +32,7 @@ public class BlogViewer {
 			map.put("class", FileResponseProcessor.class.getName());
 			map.put("under", new File("src/main/app/index.html"));
 			map.put("type", "text/html");
-			
+
 			tree.add("/", new DehydratedHandler<>(new Instantiator("index", map), items));
 		}
 		{
@@ -39,7 +40,7 @@ public class BlogViewer {
 			map.put("class", FileResponseProcessor.class.getName());
 			map.put("under", new File("src/main/app/js"));
 			map.put("type", "text/javascript");
-			
+
 			tree.add("/js/{file}", new DehydratedHandler<>(new Instantiator("js", map), items));
 		}
 		{
@@ -47,8 +48,15 @@ public class BlogViewer {
 			map.put("class", FileResponseProcessor.class.getName());
 			map.put("under", new File("src/main/app/css"));
 			map.put("type", "text/javascript");
-			
+
 			tree.add("/css/{file}", new DehydratedHandler<>(new Instantiator("css", map), items));
+		}
+		{
+			Map<String, Object> map = new TreeMap<>();
+			map.put("class", IndexLoader.class.getName());
+			map.put("runner", blogRunner);
+
+			tree.add("/ajax/load-index", new DehydratedHandler<>(new Instantiator("index", map), items));
 		}
 		server.httpMappingTree(tree);
 		PathTree<WSProcessor> wstree = new SimplePathTree<>();
