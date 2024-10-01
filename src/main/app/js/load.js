@@ -8,6 +8,7 @@ function Init() {
 	this.index.content = this.content;
 	
 	this.index.index = document.getElementById('index');
+	this.content.titleDiv = document.getElementById('title');
 	this.content.contentDiv = document.getElementById('content');
 	this.content.errorDiv = document.getElementById('error');
 }
