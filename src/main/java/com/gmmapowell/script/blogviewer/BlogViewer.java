@@ -57,6 +57,13 @@ public class BlogViewer {
 
 			tree.add("/ajax/load-index", new DehydratedHandler<>(new Instantiator("index", map), items));
 		}
+		{
+			Map<String, Object> map = new TreeMap<>();
+			map.put("class", Formatter.class.getName());
+			map.put("runner", blogRunner);
+
+			tree.add("/ajax/format", new DehydratedHandler<>(new Instantiator("format", map), items));
+		}
 		server.httpMappingTree(tree);
 		PathTree<WSProcessor> wstree = new SimplePathTree<>();
 		NewConnectionHandler<? extends WSReceiver> handler = new NewConnectionHandler<WSReceiver>() {

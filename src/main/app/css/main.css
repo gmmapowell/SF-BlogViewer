@@ -2,6 +2,10 @@
 	cursor: pointer;
 }
 
-.bold {
-	font-weight: bold;
+.show-error {
+	color: red;
+}
+
+.hidden {
+	display: none;
 }

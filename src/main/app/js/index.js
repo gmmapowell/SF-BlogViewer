@@ -1,11 +1,11 @@
 import { ajax } from "./ajax.js";
 
 function Index() {
-	this.index = document.getElementById('index');
+	this.index = null; // new ElementWithId("content");
 }
 
 Index.prototype.init = function() {
-	index.innerHTML = "<div>Post #1</div><div>Post #2</div>";
+	this.index.innerHTML = "Loading...";
 	ajax("/ajax/load-index", (stat, msg) => this.indexLoaded(stat, msg));
 }
 
@@ -13,7 +13,6 @@ Index.prototype.indexLoaded = function(stat, msg) {
 	msg = JSON.parse(msg);
 	index.innerHTML = '';
 	for (var f in msg.files) {
-		console.log(f, msg.files[f]);
 		this.makeIndexNode(msg.files[f]);
 	} 
 }
@@ -28,7 +27,7 @@ Index.prototype.makeIndexNode = function(name) {
 }
 
 Index.prototype.entryClicked = function(name) {
-	console.log("clicked on", name);
+	this.content.load(name);
 }
 
 export { Index };
