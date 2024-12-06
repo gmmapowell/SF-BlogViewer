@@ -44,7 +44,13 @@ public class Formatter extends InputStreamResponder implements RequestProcessor,
 				r.setStatus(400);
 				r.write("there is no post " + ex.post, null);
 			} catch (Throwable t) {
-				t.printStackTrace();
+				System.err.println(t.toString());
+				StackTraceElement[] elts = t.getStackTrace();
+				for (int i=0;i<elts.length;i++) {
+					if (this.getClass().getName().equals(elts[i].getClassName()))
+						break;
+					System.err.println("\t" + elts[i]);
+				}
 				r.handleError(t);
 				return;
 			}

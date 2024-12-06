@@ -2,6 +2,10 @@ import { Index } from "./index.js";
 import { ContentArea } from "./content.js";
 
 function Init() {
+	var self = this;
+	this.heading = document.getElementById('heading');
+	this.heading.addEventListener('click', ev => self.index.reloadIndex(true));
+
 	this.index = new Index();
 	this.content = new ContentArea();
 

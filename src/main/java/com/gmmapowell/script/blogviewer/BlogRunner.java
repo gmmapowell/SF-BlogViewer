@@ -26,23 +26,27 @@ public class BlogRunner {
 		uv.prepareWorlds();
 	}
 
-	public Iterable<Place> loadIndex() throws Exception {
-		if (cache == null)
+	public Iterable<Place> loadIndex(boolean force) throws Exception {
+		if (cache == null || force)
 			cache = cfg.updateIndex().included();
 		return cache;
 	}
 
 	public Place format(String post) throws Exception {
 		cfg.reset();
-		cfg.generate(getFiles(post));
+		FilesToProcess files = getFiles(post);
+		cfg.indexLoad(files);
+		cfg.generate(files);
 		cfg.sink();
 		return cfg.root().place("latestPost.txt");
 	}
 
-	private FilesToProcess getFiles(String post) throws NoPostException {
+	private FilesToProcess getFiles(String post) throws Exception {
+		if (cache == null)
+			loadIndex(false);
 		List<Place> list = new ArrayList<>();
 		for (Place p : cache) {
-			if (p.name().equals(post))
+			if (p.name().replace(".txt", "").equals(post))
 				list.add(p);
 		}
 		if (list.isEmpty()) {

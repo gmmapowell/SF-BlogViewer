@@ -5,8 +5,15 @@ function Index() {
 }
 
 Index.prototype.init = function() {
+	this.reloadIndex(false);
+}
+
+Index.prototype.reloadIndex = function(force) {
 	this.index.innerHTML = "Loading...";
-	ajax("/ajax/load-index", (stat, msg) => this.indexLoaded(stat, msg));
+	var str = "";
+	if (force)
+		str = "?force=1";
+	ajax("/ajax/load-index" + str, (stat, msg) => this.indexLoaded(stat, msg));
 }
 
 Index.prototype.indexLoaded = function(stat, msg) {
