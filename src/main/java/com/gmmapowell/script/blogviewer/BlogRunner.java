@@ -11,11 +11,12 @@ import com.gmmapowell.geofs.simple.SimpleUniverse;
 import com.gmmapowell.script.config.Config;
 import com.gmmapowell.script.config.reader.ConfigArgs;
 import com.gmmapowell.script.intf.FilesToProcess;
+import com.gmmapowell.script.loader.LabelledPlace;
 
 public class BlogRunner {
 	private final Universe uv;
 	private final Config cfg;
-	private Iterable<Place> cache;
+	private Iterable<LabelledPlace> cache;
 
 	public BlogRunner(String[] args) throws Exception {
 		uv = new SimpleUniverse();
@@ -26,7 +27,7 @@ public class BlogRunner {
 		uv.prepareWorlds();
 	}
 
-	public Iterable<Place> loadIndex(boolean force) throws Exception {
+	public Iterable<LabelledPlace> loadIndex(boolean force) throws Exception {
 		if (cache == null || force)
 			cache = cfg.updateIndex().included();
 		return cache;
@@ -44,9 +45,9 @@ public class BlogRunner {
 	private FilesToProcess getFiles(String post) throws Exception {
 		if (cache == null)
 			loadIndex(false);
-		List<Place> list = new ArrayList<>();
-		for (Place p : cache) {
-			if (p.name().replace(".txt", "").equals(post))
+		List<LabelledPlace> list = new ArrayList<>();
+		for (LabelledPlace p : cache) {
+			if (p.label.replace(".txt", "").equals(post))
 				list.add(p);
 		}
 		if (list.isEmpty()) {
@@ -54,7 +55,7 @@ public class BlogRunner {
 		}
 		return new FilesToProcess() {
 			@Override
-			public Iterable<Place> included() {
+			public Iterable<LabelledPlace> included() {
 				return list;
 			}
 		};

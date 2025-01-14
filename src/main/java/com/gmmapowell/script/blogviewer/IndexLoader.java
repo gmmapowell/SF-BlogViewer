@@ -8,7 +8,7 @@ import org.ziniki.servlet.tda.RequestQueryAndPostParameters;
 import org.ziniki.servlet.tda.Responder;
 import org.ziniki.ziwsh.intf.Param;
 
-import com.gmmapowell.geofs.Place;
+import com.gmmapowell.script.loader.LabelledPlace;
 
 public class IndexLoader implements RequestProcessor, RequestQueryAndPostParameters {
 	private final BlogRunner runner;
@@ -35,8 +35,8 @@ public class IndexLoader implements RequestProcessor, RequestQueryAndPostParamet
 		JSONObject jo = new JSONObject();
 		JSONArray files = new JSONArray();
 		jo.put("files", files);
-		for (Place p : runner.loadIndex(force)) {
-			files.put(p.name().replace(".txt", ""));
+		for (LabelledPlace p : runner.loadIndex(force)) {
+			files.put(p.label.replace(".txt", ""));
 		}
 
 		r.write(jo.toString(), null);
